@@ -1,26 +1,10 @@
 #!/usr/bin/python3
-from typing import List, Generator, Dict
-
-
-def prime_generator() -> Generator:
-    """ Uses Sieve of Eratosthenes """
-    dictionary: Dict[int, int] = {}
-    value: int = 2
-    while True:
-        if value not in dictionary.values():
-            dictionary[value] = value ** 2
-            yield value
-        else:
-            for (key, val) in dictionary.items():
-                if val == value:
-                    dictionary[key] = val + key
-        value += 1
-
+from pymods import primegen
 
 def lowest_prime_factor(number: int) -> int:
-    generator = prime_generator()
+    gen = primegen.generator()
     while True:
-        prime = next(generator)
+        prime = next(gen)
         if not number % prime:
             break
     return prime
