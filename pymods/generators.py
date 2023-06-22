@@ -10,10 +10,10 @@ def fibgen() -> _t.Generator:
     prev = 0
     now = 1
     while True:
+        yield now
         next = prev + now
         prev = now
         now = next
-        yield now
 
 
 def primegen() -> _t.Generator:
