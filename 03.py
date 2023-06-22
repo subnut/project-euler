@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-from pymods import primegen
+from pymods.generators import primegen
 
 def lowest_prime_factor(number: int) -> int:
-    gen = primegen.generator()
+    gen = primegen()
     while True:
         prime = next(gen)
         if not number % prime:
