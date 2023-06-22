@@ -1,15 +1,37 @@
 module dmods.generators;
 
+struct Fibgen {
+	immutable ulong max = 12_200_160_415_121_876_738;
+	private ulong _prev = 0;
+	private ulong _now = 1;
+	private ulong _next;
+	bool stopped = false;
+	ulong cur = 1;
+	ulong next() {
+		if (stopped)
+			return 0;
+
+		_next = _prev + _now;
+		_prev = _now;
+		_now = _next;
+		if (_now < _prev) // overflow
+			stopped = true;
+
+		cur = _prev;
+		return _prev; // otherwise it skips the first digit
+	}
+}
+
 /*
  * 4294967291 is the largest prime number below 2^^32 (square root of 2^^64)
  * It's the 203,280,211st prime number
  */
 
 struct Primegen {
+	immutable ulong max = 4_294_967_291;
+	private ulong[] primes, vals;
 	bool stopped = false;
-	ulong max = 4_294_967_291;
 	ulong cur = 1;
-	ulong[] primes, vals;
 	ulong next() {
 		// This seems to slow it down a bit..
 		// TODO: test if it actually does slow down.
