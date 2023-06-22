@@ -38,32 +38,31 @@ struct Primegen {
 	private ulong cur = 1;
 	bool stopped = false;
 	ulong next() {
-		// This seems to slow it down a bit..
-		// TODO: test if it actually does slow down.
-		// if (this.stopped)
+		// reduces speed.
+		// if (stopped)
 		// 	return 0;
 
 		bool notprime;
-		while (this.cur < this.max) {
-			this.cur++;
+		while (cur < max) {
+			cur++;
 			notprime = false;
-			foreach (index; 0 .. this.primes.length) {
-				if (this.vals[index] == this.cur) {
+			foreach (index; 0 .. primes.length) {
+				if (vals[index] == cur) {
 					notprime = true;
-					this.vals[index] += this.primes[index];
+					vals[index] += primes[index];
 				}
 			}
 			if (notprime)
 				continue;
 
-			this.primes ~= this.cur;
-			this.vals ~= this.cur ^^ 2;
+			primes ~= cur;
+			vals ~= cur ^^ 2;
 
-			return this.cur;
+			return cur;
 		}
 
 		// will overflow.
-		this.stopped = true;
+		stopped = true;
 		return 0;
 	}
 }
