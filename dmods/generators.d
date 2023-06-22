@@ -1,12 +1,18 @@
 module dmods.generators;
 
+/*
+   All generators have -
+   - `max` - immutable value containing the maximum value that can be generated
+   - `next()` - function to generate and return the next value of the generator
+   - `stopped` - boolean that indicates whether the generator has finished
+ */
+
 struct Fibgen {
 	immutable ulong max = 12_200_160_415_121_876_738;
 	private ulong _prev = 0;
 	private ulong _now = 1;
 	private ulong _next;
 	bool stopped = false;
-	ulong cur = 1;
 	ulong next() {
 		if (stopped)
 			return 0;
@@ -17,7 +23,6 @@ struct Fibgen {
 		if (_now < _prev) // overflow
 			stopped = true;
 
-		cur = _prev;
 		return _prev; // otherwise it skips the first digit
 	}
 }
@@ -30,8 +35,8 @@ struct Fibgen {
 struct Primegen {
 	immutable ulong max = 4_294_967_291;
 	private ulong[] primes, vals;
+	private ulong cur = 1;
 	bool stopped = false;
-	ulong cur = 1;
 	ulong next() {
 		// This seems to slow it down a bit..
 		// TODO: test if it actually does slow down.
