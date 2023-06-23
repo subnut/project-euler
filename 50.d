@@ -10,7 +10,7 @@ void main() {
 	{
 		auto next = gen.next;
 		do primes ~= next;
-		while ((next = gen.next()) < 100_000);
+		while ((next = gen.next()) < 1_000_000);
 	}
 	writeln("Primes generated.");
 
