@@ -8,17 +8,18 @@ void main() {
 	ulong[] primes;
 	writeln("Generating primes...");
 	{
-		auto next = gen.next;	// We're skipping 2
-		while ((next = gen.next()) < 1_000_000)
-			primes ~= next;
+		auto next = gen.next;
+		do primes ~= next;
+		while ((next = gen.next()) < 100_000);
 	}
 	writeln("Primes generated.");
 
 	writeln("Looking for combinations...");
 	auto tpool = taskPool();
 	ulong[][][ulong] dict;
+	tpool.put(task!find(primes, &dict, 0));
 	foreach (i; 0 .. primes.length)
-		tpool.put(task!find(primes, &dict, i));
+		tpool.put(task!find_skipped(primes, &dict, i));
 	tpool.finish(true);
 	writeln("Found all combinations.");
 
@@ -35,12 +36,32 @@ void main() {
 			}
 
 	writeln(max_num, " = ", max_comb);
-
 }
 
 void find(ulong[] primes, ulong[][][ulong] *dict, ulong i) {
 	ulong sum = primes[i];
 	foreach (j; i+1 .. primes.length) {
+		sum += primes[j];
+		foreach (n; primes[j .. $]) {
+			if (n > sum)
+				break;
+			if (n == sum) {
+				ulong[] arr;
+				foreach (k; primes[i .. j+1]) arr ~= k;
+				synchronized { (*dict)[n] ~= arr; }
+				break;
+			}
+		}
+	}
+}
+
+// We're gonna be fine if the part we're searching doesn't contain 2
+// This works because odd + odd = even, which isn't prime anyways.
+// So we skip odd+odd and go directly to odd+odd+odd
+void find_skipped(ulong[] primes, ulong[][][ulong] *dict, ulong i) {
+	ulong sum = primes[i];
+	for (auto j = i+1; j < primes.length; j++) {
+		sum += primes[j++];	// Here's the skipping
 		sum += primes[j];
 		foreach (n; primes[j .. $]) {
 			if (n > sum)
