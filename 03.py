@@ -1,5 +1,5 @@
-#!/usr/bin/python3
 from pymods.generators import primegen
+
 
 def lowest_prime_factor(number: int) -> int:
     gen = primegen()
