@@ -1,6 +1,8 @@
+immutable consec = 4; // Number of consecutive nos. to consider
+
 import std.conv : to;
 import std.stdio : writeln;
-import std.algorithm : maxElement;
+import std.algorithm : maxElement, filter;
 import std.parallelism : task, taskPool, TaskPool;
 
 class Lock {}
@@ -11,8 +13,10 @@ void main() {
 	auto tp = taskPool();
 		tp.put(task!rows(&res));
 		tp.put(task!columns(&res));
+		tp.put(task!bdiags(&res));
+		tp.put(task!fdiags(&res));
 	tp.finish(true);
-	writeln(res);
+	writeln(res.maxElement);
 }
 
 void rows(int[] *resarr) {
@@ -26,7 +30,7 @@ void rows(int[] *resarr) {
 }
 
 void columns(int[] *resarr) {
-	int[][20] colgrid;
+	int[][grid.length] colgrid;
 	foreach(row; grid)
 		foreach(i, v; row)
 			colgrid[i] ~= to!int(v);
@@ -40,12 +44,36 @@ void columns(int[] *resarr) {
 		*resarr ~= maxElement(res);
 }
 
+void bdiags(int[] *resarr) {
+	int[][int] dict;
+	foreach_reverse(i, row; grid)
+		foreach(j, num; row)
+			dict[to!int(j)-to!int(i)] ~= num;
+	diag_helper(dict, resarr);
+}
+void fdiags(int[] *resarr) {
+	int[][int] dict;
+	foreach(i, row; grid)
+		foreach(j, num; row)
+			dict[to!int(i+j)] ~= num;
+	diag_helper(dict, resarr);
+}
+void diag_helper(int[][int] dict, int[] *resarr) {
+	int[] res;
+	auto tp = new TaskPool;
+	foreach(row; dict.values.filter!(x => x.length >= consec))
+		tp.put(task!greatestprod(row, &res));
+	tp.finish(true);
+	synchronized(lock)
+		*resarr ~= maxElement(res);
+}
+
 void greatestprod(const int[] arr, int[] *res_arr) {
 	int max = 0;
-	/* We are guaranteed that array.length >= 4 */
-	foreach(i; 0..arr.length - 3) {
+	/* We are guaranteed that array.length >= consec */
+	foreach(i; 0..arr.length - (consec-1)) {
 		int cur = 1;
-		foreach(n; arr[i .. i+4])
+		foreach(n; arr[i .. i + consec])
 			cur *= n;
 		if (cur > max)
 			max = cur;
