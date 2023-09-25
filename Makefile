@@ -6,5 +6,5 @@
 .py: ; python3 $<
 .c:  ; tcc -run $<
 .d:
-	ln -s "$<" "d$<"
+	ln -sf "$<" "d$<"
 	sh -c 'rdmd "d$<"; rm -f "d$<"'
