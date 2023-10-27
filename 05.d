@@ -1,30 +1,29 @@
 import std.stdio : writeln;
-import dmods.generators : Primegen;
+import dmods.ranges : PrimeRange;
+
+class MyRange : PrimeRange!int {
+	override bool empty() {
+		return current > 20;
+	}
+}
 
 void main() {
-	Primegen gen;
-	int[ulong] dict;
-	ulong next;
-
-	while ((next = gen.next()) < 20)
-		dict[next] = 1;
-
-	foreach (n; 0 .. 21) {
-		int i;
-		auto a = n;
-		foreach (k; dict.byKey) {
-			i = 0;
-			a = n;
-			while (a /= k)
-				i++;
-			if (i > dict[k])
-				dict[k] = i;
+	int[int] dict;
+	foreach (factor; new MyRange) {
+		dict[factor] = 1;
+		auto max = &dict[factor];
+		foreach (num; 1 .. 21) {
+			int counter = 0;
+			while (num /= factor)
+				counter++;
+			if (counter > *max)
+				*max = counter;
 		}
 	}
 
-	ulong prod = 1;
-	foreach (k; dict.byKey)
-		prod *= k ^^ dict[k];
+	int result = 1;
+	foreach (k,v; dict)
+		result *= k ^^ v;
 
-	writeln(prod);
+	writeln(result);
 }
