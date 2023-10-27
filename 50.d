@@ -1,20 +1,22 @@
+import std.array : array;
 import std.stdio : writeln;
 import std.parallelism : taskPool, task;
-import dmods.generators : Primegen;
+import dmods.ranges : PrimeRange;
 
+class MyPrimeRange : PrimeRange!ulong {
+	override bool empty() {
+		return current > 1_000_000;
+	}
+}
 
 void main() {
-	Primegen gen;
-	ulong[] primes;
 	writeln("Generating primes...");
-	{
-		auto next = gen.next;
-		do primes ~= next;
-		while ((next = gen.next()) < 1_000_000);
-	}
-	writeln("Primes generated.");
+	ulong[] primes = array(new MyPrimeRange);
 
 	writeln("Looking for combinations...");
+	writeln();
+	writeln("Sum\tNos.\tStart");
+
 	auto tpool = taskPool();
 	ulong curmax = 183;
 	ulong curstart;
