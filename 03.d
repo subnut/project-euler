@@ -1,10 +1,9 @@
 import dmods.ranges : PrimeRange;
-import std.bigint : BigInt;
 import std.stdio : writeln;
 
-alias T = BigInt;
+alias T = ulong;
 class MyRange : PrimeRange!T {
-	enum bool empty = false;
+	enum bool empty = false;	// YOLO.
 }
 
 T lowestPrimeFactor(T num) {
