@@ -1,5 +1,6 @@
 module dmods.ranges;
 import std.bigint : BigInt;
+import std.conv : to;
 
 class FibRangeInf : FibRange!BigInt	{ enum bool empty = false; }
 class PrimeRangeInf : PrimeRange!BigInt	{ enum bool empty = false; }
@@ -30,7 +31,7 @@ class PrimeRange(T) {
 		dict[current * current] ~= current;
 	}
 
-protected:
-	T[][T] dict;
-	T current = 2;
+	protected T[][T] dict;
+	protected T current = 2;
+	this() { dict[to!T(4)] ~= to!T(2); }
 }
