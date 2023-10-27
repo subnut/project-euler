@@ -6,6 +6,8 @@ class FibRangeInf : FibRange!BigInt	{ enum bool empty = false; }
 class PrimeRangeInf : PrimeRange!BigInt	{ enum bool empty = false; }
 
 class FibRange(T) {
+	alias _T = to!T;
+
 	T front() { return now; }
 	bool empty() { return prev > now; }
 	void popFront() {
@@ -20,6 +22,8 @@ protected:
 }
 
 class PrimeRange(T) {
+	alias _T = to!T;
+
 	T front() { return current; }
 	bool empty() { return true; }	// TODO: find max we can compute using T
 	void popFront() {
