@@ -1,10 +1,15 @@
 import std.stdio : writeln;
-import dmods.generators : Primegen;
+import std.algorithm : sum;
+import dmods.ranges : PrimeRange;
+
+class MyRange : PrimeRange!ulong {
+	override bool empty() {
+		return current >= 2_000_000;
+	}
+}
 
 void main() {
-	Primegen gen;
-	ulong sum = 0;
-	for (ulong next; next < 2_000_000; next = gen.next())
-		sum += next;
-	writeln(sum);
+	(new MyRange)
+		.sum
+		.writeln;
 }

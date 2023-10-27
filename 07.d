@@ -1,9 +1,9 @@
+import dmods.ranges : PrimeRange;
+import std.range : popFrontExactly;
 import std.stdio : writeln;
-import dmods.generators : Primegen;
 
 void main() {
-	auto pgen = Primegen();
-	foreach(_; 0..10_000)
-		pgen.next();
-	pgen.next().writeln;
+	auto range = new PrimeRange!ulong;
+	range.popFrontExactly(10_000);
+	range.front.writeln;
 }
